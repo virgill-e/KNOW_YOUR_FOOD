@@ -58,6 +58,7 @@ Les navigateurs modernes bloquent l'accès à la caméra sur des connexions HTTP
 - ❌ **Ne fonctionnera pas** : Accès via HTTP sur une IP locale (ex: `http://192.168.x.x`)
 
 Si vous devez tester sur un réseau local avec d'autres appareils, vous pouvez :
+- Utiliser un service comme [ngrok](https://ngrok.com/) pour créer un tunnel HTTPS
 - Configurer un certificat SSL auto-signé pour votre serveur de développement
 
 ## 🌐 API
