@@ -1,75 +1,54 @@
-# Nuxt Minimal Starter
+# 🔍 Know - Barcode Scanner & Product Information
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+**Know your food** est une application web permettant de scanner des codes-barres pour obtenir des informations détaillées sur les produits alimentaires via l'API OpenFoodFacts.
 
-## Setup
+## ✨ Fonctionnalités
 
-Make sure to install dependencies:
+- 📷 **Scan de codes-barres en temps réel** - Utilisez votre caméra pour scanner directement les codes-barres et QR codes
+- ⌨️ **Saisie manuelle** - Entrez manuellement le code-barres si vous le connaissez
+- 📊 **Informations nutritionnelles** - Consultez les scores Nutri-Score, Eco-Score et NOVA
+- 🌍 **Base de données mondiale** - Accès à la base de données collaborative OpenFoodFacts
+- 📱 **Design responsive** - Interface optimisée pour mobile et desktop
 
+## 🛠️ Technologies utilisées
+
+- **[Nuxt 4](https://nuxt.com/)** - Framework Vue.js pour applications web modernes
+- **[Vue 3](https://vuejs.org/)** - Framework JavaScript progressif
+- **[Tailwind CSS 4](https://tailwindcss.com/)** - Framework CSS utility-first
+- **[html5-qrcode](https://github.com/mebjas/html5-qrcode)** - Bibliothèque de scan de QR codes et codes-barres
+- **[OpenFoodFacts API](https://world.openfoodfacts.org/)** - API pour les informations produits
+- **TypeScript** - Typage statique pour JavaScript
+
+## 📦 Installation
+
+### Prérequis
+
+- Node.js 18+ 
+- npm, pnpm, yarn ou bun
+
+### Étapes d'installation
+
+1. Clonez le dépôt :
 ```bash
-# npm
+git clone <votre-repo>
+cd know
+```
+
+2. Installez les dépendances :
+```bash
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
+3. Lancez le serveur de développement :
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+4. Ouvrez votre navigateur à l'adresse `http://localhost:3000`
 
-Build the application for production:
 
-```bash
-# npm
-npm run build
+## 🌐 API
 
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Ce projet utilise l'API OpenFoodFacts v2 :
+- **Endpoint** : `https://world.openfoodfacts.net/api/v2/product/{barcode}`
+- **Documentation** : [OpenFoodFacts API Docs](https://openfoodfacts.github.io/openfoodfacts-server/api/)
