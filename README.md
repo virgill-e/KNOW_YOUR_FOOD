@@ -46,6 +46,19 @@ npm run dev
 
 4. Ouvrez votre navigateur à l'adresse `http://localhost:3000`
 
+## ⚠️ Important - Accès à la caméra
+
+Pour utiliser la fonctionnalité de scan de codes-barres avec la caméra, votre application **doit être servie via HTTPS ou localhost**.
+
+Les navigateurs modernes bloquent l'accès à la caméra sur des connexions HTTP non sécurisées pour des raisons de sécurité.
+
+**Solutions :**
+- ✅ **En développement** : Utilisez `localhost` (déjà configuré par défaut)
+- ✅ **En production** : Déployez votre application avec un certificat SSL/TLS (HTTPS)
+- ❌ **Ne fonctionnera pas** : Accès via HTTP sur une IP locale (ex: `http://192.168.x.x`)
+
+Si vous devez tester sur un réseau local avec d'autres appareils, vous pouvez :
+- Configurer un certificat SSL auto-signé pour votre serveur de développement
 
 ## 🌐 API
 
