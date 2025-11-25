@@ -20,12 +20,14 @@
         
         <div class="relative">
           <input 
+            v-model="barcode"
             type="text" 
             placeholder="Enter barcode..."
             class="w-full px-6 py-4 bg-gray-50 border-2 border-gray-300 rounded-lg text-black placeholder-gray-400 
                    focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10
                    transition-all duration-300 font-mono tracking-wider
                    hover:border-gray-400 hover:bg-gray-100/50"
+            @keyup.enter="validateBarcode"
           />
                     
           <!-- Bouton caméra dans l'input -->
@@ -48,14 +50,19 @@
       </div>
 
       <!-- Bouton de validation -->
-      <button class="w-full relative group overflow-hidden rounded-lg">
+      <button 
+        @click="validateBarcode"
+        class="w-full relative group overflow-hidden rounded-lg"
+      >
         <!-- Background du bouton -->
         <div class="absolute inset-0 bg-black transition-transform duration-300 group-hover:scale-105"></div>
         <div class="absolute inset-0 bg-linear-to-r from-transparent via-gray-800 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
         
         <!-- Contenu du bouton -->
         <div class="relative px-8 py-4 flex items-center justify-center space-x-3">
-          <span class="text-white font-bold tracking-wider uppercase text-sm">Validate Barcode</span>
+          <span class="text-white font-bold tracking-wider uppercase text-sm">
+            Validate Barcode
+          </span>
           <svg class="w-5 h-5 text-white group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
           </svg>
@@ -64,3 +71,19 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+const barcode = ref('')
+const error = ref<string | null>(null)
+
+
+const validateBarcode = async () => {
+  if (!barcode.value.trim()) {
+    error.value = 'Please enter a barcode'
+    return
+  }
+
+  // Navigate to product page with barcode in URL
+  await navigateTo(`/product/${barcode.value.trim()}`)
+}
+</script>
