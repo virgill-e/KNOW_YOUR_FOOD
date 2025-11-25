@@ -6,7 +6,6 @@
       <div class="text-center space-y-2">
         <h1 class="text-4xl font-bold text-black tracking-wider uppercase relative">
           <span class="relative z-10">Barcode Scanner</span>
-          <div class="absolute inset-0 blur-xl bg-black opacity-10"></div>
         </h1>
         <p class="text-gray-600 text-sm tracking-wide font-light">
           Enter the barcode number or scan it
@@ -14,10 +13,7 @@
       </div>
 
       <!-- Input du qrcode -->
-      <div class="relative group">
-        <!-- Effet de glow animé -->
-        <div class="absolute -inset-0.5 bg-linear-to-r from-black to-gray-500 rounded-lg blur opacity-10 group-hover:opacity-20 transition duration-500"></div>
-        
+      <div class="relative group"> 
         <div class="relative">
           <input 
             v-model="barcode"
@@ -33,6 +29,7 @@
           <!-- Bouton caméra dans l'input -->
           <button 
             type="button"
+            @click="openScanner"
             class="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md
                    bg-black text-white
                    hover:bg-gray-800 hover:scale-110
@@ -69,13 +66,50 @@
         </div>
       </button>
     </div>
+
+    <!-- Modal du scanner -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div 
+          v-if="showScanner" 
+          class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          @click.self="closeScanner"
+        >
+          <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 overflow-hidden">
+            <!-- Header du modal -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+              <h2 class="text-xl font-bold text-black tracking-wide">Scan Barcode</h2>
+              <button 
+                @click="closeScanner"
+                class="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Zone du scanner -->
+            <div class="p-6">
+              <div id="qr-reader" class="w-full rounded-lg overflow-hidden border-2 border-gray-300"></div>
+              <p class="mt-4 text-center text-sm text-gray-600">
+                Position the barcode or QR code within the frame
+              </p>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Html5Qrcode } from 'html5-qrcode'
+
 const barcode = ref('')
 const error = ref<string | null>(null)
-
+const showScanner = ref(false)
+let html5QrCode: Html5Qrcode | null = null
 
 const validateBarcode = async () => {
   if (!barcode.value.trim()) {
@@ -86,4 +120,82 @@ const validateBarcode = async () => {
   // Navigate to product page with barcode in URL
   await navigateTo(`/product/${barcode.value.trim()}`)
 }
+
+const openScanner = async () => {
+  showScanner.value = true
+  
+  // Attendre que le DOM soit mis à jour
+  await nextTick()
+  
+  try {
+    html5QrCode = new Html5Qrcode("qr-reader")
+    
+    const config = {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+      aspectRatio: 1.0
+    }
+    
+    await html5QrCode.start(
+      { facingMode: "environment" }, // Utiliser la caméra arrière sur mobile
+      config,
+      (decodedText) => {
+        // Succès du scan
+        barcode.value = decodedText
+        closeScanner()
+      },
+      (errorMessage) => {
+        // Erreur de scan (normal pendant le scan)
+        // On ne fait rien ici car c'est normal d'avoir des erreurs pendant le scan
+      }
+    )
+  } catch (err) {
+    console.error('Error starting scanner:', err)
+    error.value = 'Unable to access camera'
+    showScanner.value = false
+  }
+}
+
+const closeScanner = async () => {
+  if (html5QrCode) {
+    try {
+      await html5QrCode.stop()
+      html5QrCode.clear()
+    } catch (err) {
+      console.error('Error stopping scanner:', err)
+    }
+    html5QrCode = null
+  }
+  showScanner.value = false
+}
+
+// Nettoyer le scanner si le composant est démonté
+onUnmounted(() => {
+  if (html5QrCode) {
+    html5QrCode.stop().catch(console.error)
+  }
+})
 </script>
+
+<style scoped>
+/* Animations pour le modal */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .relative,
+.modal-leave-active .relative {
+  transition: transform 0.3s ease;
+}
+
+.modal-enter-from .relative,
+.modal-leave-to .relative {
+  transform: scale(0.9);
+}
+</style>
